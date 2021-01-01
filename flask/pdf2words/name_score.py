@@ -1,11 +1,8 @@
 import os
 import json
 from pdf2words import document
-import cv2
-import numpy as np
 import re
 from operator import itemgetter
-
 
 class name_scoring:
     def __init__(self):
