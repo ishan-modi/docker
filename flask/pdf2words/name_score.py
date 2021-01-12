@@ -1,7 +1,6 @@
 import os
 import json
 from pdf2words import document
-import cv2
 import numpy as np
 import re
 from operator import itemgetter
