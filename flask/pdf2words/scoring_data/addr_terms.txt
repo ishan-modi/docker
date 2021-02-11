@@ -7,11 +7,15 @@ behind
 beside
 block
 bungalows
+building
 chowk
 circle
 colony
+complex
 east
 flat
+flr
+floor
 gali
 greater
 housing
@@ -22,6 +26,7 @@ new
 north
 nr
 old
+opp
 park
 po
 rd
@@ -31,9 +36,13 @@ regionroad
 road
 sector
 society
+soc
 south
 st
 street
+station
+stand
+town
 village
 west
 wing
