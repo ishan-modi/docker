@@ -14,12 +14,19 @@ class extract_name(Resource):
     def post(self):
         file_data = request.files['file'].read()
         file_data=json.loads(file_data)
-        obj = name_score.name_scoring()
-        obj.forming(file_data)
-        obj.clean()
-        obj.scoring()
+        obj1 = name_score.name_scoring()
+        obj1.forming(file_data)
+        obj1.clean()
+        obj1.scoring()
+        
+        obj2 = addr_score.addr_scoring()
+        obj2.forming(file_data)
+        obj2.clean()
+        obj2.scoring()
+
         data={
-            'name':obj.get_name()
+            'name':obj1.get_name(),
+            'address':obj2.get_addr()
         }
         resp=jsonify(data)
         return resp
