@@ -38,7 +38,7 @@ class name_scoring:
         cnt = 0
         flag = 0
 
-         #iterating through all words of 1st page
+        #iterating through all words of 1st page
         for word in wordpage._words:
             x0 = word._x0
             x1 = word._x1
@@ -217,11 +217,11 @@ class name_scoring:
         for cluster in self.clusters:
             scr = 0    
 
-            cities=self.read('pdf2words/name_score/cities.txt')
+            cities=self.read('pdf2words/scoring_data/cities.txt')
 
-            first_names = self.read('pdf2words/name_score/first_names.txt')
+            first_names = self.read('pdf2words/scoring_data/first_names.txt')
 
-            last_names = self.read('pdf2words/name_score/last_names.txt')
+            last_names = self.read('pdf2words/scoring_data/last_names.txt')
             
             words = ''.join([x._text for x in cluster])
             l = [x._text.upper() for x in cluster]
@@ -298,7 +298,7 @@ class name_scoring:
 
             # checking for commonly occuring bank words
 
-            common = self.read('pdf2words/name_score/bank_terms.txt')
+            common = self.read('pdf2words/scoring_data/bank_terms.txt')
             flag = 0
             for i in common:
                 if(len(i)>=4 and i.upper() in l):
@@ -313,7 +313,7 @@ class name_scoring:
 
             # checking for commonly occuring bank words
             
-            common = self.read('pdf2words/name_score/addr_terms.txt')
+            common = self.read('pdf2words/scoring_data/addr_terms.txt')
             flag = 0
             for i in common:
                 if(len(i)>=4 and i.upper() in l):
@@ -327,7 +327,7 @@ class name_scoring:
 
             # checking for company suffix
 
-            company = self.read('pdf2words/name_score/company_suffix.txt')
+            company = self.read('pdf2words/scoring_data/company_suffix.txt')
 
             flag = 0
             for i in company:
@@ -410,6 +410,21 @@ class name_scoring:
 
         return name
 
+    def get_bbox(self,cluster):
+        #bbox=[x1,x2,x3,x4]
+        bbox=[0,0,0,0]
+        
+        bbox[1]=cluster[0]._y0
+        bbox[3]=cluster[-1]._y1
+
+        for i in cluster:
+            if(i._x0>bbox[0]):
+                bbox[0]=i._x0
+            if(i._x1>bbox[2]):
+                bbox[2]=i._x1
+
+        return bbox
+
     def check_acc(self, json_path):
         # reverse sorting clusters based on score
         Z = [[scr, cluster] for scr, cluster in zip(self.score, self.clusters)]
@@ -425,7 +440,7 @@ class name_scoring:
             cnt += 1'''
 
         # comparing with original data
-        answers = self.read('pdf2words/name_score/original.txt')
+        answers = self.read('pdf2words/scoring_data/original.txt')
 
         dict = {}
         for i in answers:
