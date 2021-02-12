@@ -17,6 +17,7 @@ class name_scoring:
         self.location = []
         self.position_x = 0
         self.position_y = 0
+        self.thresh_y=0
 
     def forming(self, obj):
         word_group = []
@@ -28,14 +29,13 @@ class name_scoring:
         height = int(wordpage._height)
         width = int(wordpage._width)
 
-        thresh_y = 0.008 * height
+        self.thresh_y = 0.008 * height
 
         half_h = height//2
 
         self.position_x = width//2
         self.position_y = half_h//2
 
-        cnt = 0
         flag = 0
 
         #iterating through all words of 1st page
@@ -61,7 +61,7 @@ class name_scoring:
 
                         #next line encountered at 2nd word
 
-                        if(abs(diff1_y) > thresh_y):
+                        if(abs(diff1_y) > self.thresh_y):
                             val = word_group.pop()
                             self.clusters.append(word_group)
                             word_group = []
@@ -77,7 +77,7 @@ class name_scoring:
 
                         #grouping words in particular cluster based on minimum difference
 
-                        if(abs(diff2_y) <= thresh_y):
+                        if(abs(diff2_y) <= self.thresh_y):
                             thresh_x = (((y1-y0) + (temp_y1-temp_y0))/2)*0.55
                             if(abs(diff1_x-diff2_x) <= thresh_x):
                                 word_group.append(word)
@@ -97,7 +97,7 @@ class name_scoring:
 
                         #next line encountered at 3rd word
 
-                        elif(abs(diff2_y) > thresh_y):
+                        elif(abs(diff2_y) > self.thresh_y):
                             self.clusters.append(word_group)
                             word_group = []
                             word_group.append(word)
@@ -211,7 +211,6 @@ class name_scoring:
         return l
 
     def scoring(self):
-        cluster_size = []
         for cluster in self.clusters:
             scr = 0
 
@@ -378,7 +377,7 @@ class name_scoring:
                     temp = i
                     self.score[size[i]] += cnt
                 else:
-                    if(abs(temp-i) >= thresh_y):
+                    if(abs(temp-i) >= self.thresh_y):
                         cnt -= 0.5
                         self.score[size[i]] += cnt
                     else:

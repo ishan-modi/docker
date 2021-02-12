@@ -1,6 +1,7 @@
 import os
 import json
 from pdf2words import name_score
+from pdf2words import addr_score
 from flask import Flask,jsonify
 from flask_restful import Api,Resource,request
 from app import app

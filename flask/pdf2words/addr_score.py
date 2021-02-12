@@ -2,6 +2,7 @@ import os
 import json
 from pdf2words import document
 import numpy as np
+from sklearn.cluster import DBSCAN
 import re
 from operator import itemgetter
 from collections import OrderedDict
@@ -197,11 +198,11 @@ class addr_scoring:
         for cluster in self.clusters:
             scr = 0
 
-            cities = self.read('cities.txt')
+            cities = self.read('pdf2words/scoring_data/cities.txt')
 
-            first_names = self.read('first_names.txt')
+            first_names = self.read('pdf2words/scoring_data/first_names.txt')
 
-            last_names = self.read('last_names.txt')
+            last_names = self.read('pdf2words/scoring_data/last_names.txt')
 
             words = ''.join([x._text for x in cluster])
             l = [x._text.upper() for x in cluster]
@@ -273,7 +274,7 @@ class addr_scoring:
 
             # checking for commonly occuring bank words
 
-            common = self.read('bank_terms.txt')
+            common = self.read('pdf2words/scoring_data/bank_terms.txt')
             flag = 0
             for i in common:
                 if(len(i) >= 4 and i.upper() in l):
@@ -288,7 +289,7 @@ class addr_scoring:
 
             # checking for commonly occuring addr words
 
-            common = self.read('addr_terms.txt')
+            common = self.read('pdf2words/scoring_data/addr_terms.txt')
             flag = 0
             for i in common:
                 if(len(i) >= 4 and i.upper() in l):
@@ -302,7 +303,7 @@ class addr_scoring:
 
             # checking for company suffix
 
-            company = self.read('company_suffix.txt')
+            company = self.read('pdf2words/scoring_data/company_suffix.txt')
 
             flag = 0
             for i in company:
@@ -372,12 +373,19 @@ class addr_scoring:
 
         self.clusters = []
 
-        # sort it based on y0 for the clusters
+        # sort the addr groups to obtain address in sequence
 
         for i in addr_cluster:
-            def func(x):
+            def func1(x):
                 return x[0]._y0
-            addr_cluster[i] = sorted(addr_cluster[i], key=func)
+            addr_cluster[i] = sorted(addr_cluster[i], key=func1)
+
+        # sort the individual addr groups to find topmost addr
+
+        def func2(x):
+            x=x[1]
+            return x[0][0]._y0
+        addr_cluster=OrderedDict(sorted(addr_cluster.items(),key=func2))
 
         for idx, i in enumerate(addr_cluster):
             self.clusters.append([])
@@ -406,11 +414,14 @@ class addr_scoring:
         return bbox
 
     def get_addr(self):
-        addr=''
-        for i in self.clusters[0]:
-            addr+=i._text+' '
-
-        return addr
+        addr_list=[]
+        if(self.clusters!=[]):
+            for cluster in self.clusters:
+                addr=''  
+                for i in cluster:
+                    addr+=i._text+' '
+                addr_list.append(addr)
+        return addr_list
 
     def check_acc(self, json_path):
         # reverse sorting clusters based on score
