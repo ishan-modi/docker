@@ -35,7 +35,6 @@ class addr_scoring:
         self.position_x = width//2
         self.position_y = half_h//2
 
-        cnt = 0
         flag = 0
 
         #iterating through all words of 1st page
@@ -194,7 +193,6 @@ class addr_scoring:
         return l
 
     def scoring(self):
-        cluster_size = []
         for cluster in self.clusters:
             scr = 0
 
