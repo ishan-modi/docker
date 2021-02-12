@@ -25,6 +25,7 @@ code
 collection
 credit
 credits
+cr
 csh
 cts
 currency
